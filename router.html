@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Url parameter - Vue Router</title>
+  </head>
+  <body>
+    <div id="app">
+      <router-link to="/top">Go to Top</router-link>
+      <router-link to="/users/123">Go to User</router-link>
+      <router-link to="/users/123/posts">Posts</router-link>
+      <router-link to="/a">A</router-link>
+      <router-link to="/b">B</router-link>
+      <router-link to="/a2">A'</router-link>
+      <router-link to="/b2">B'</router-link>
+      <router-view></router-view>
+    </div>
+
+    <script src="https://unpkg.com/vue@2.6.10"></script>
+    <script src="https://unpkg.com/vue-router@3.0.6"></script>
+    <script>
+      const Top = { template: '<div>Top</div>'}
+    //   const User = { template: '<div>User {{ $route.params.userId }}</div>'}
+      const User = { template: `
+        <div>
+            <div>User {{ $route.params.userId }}</div>
+            <router-view></router-view>
+        </div>
+      `}
+      const Posts = { template: `
+        <div>
+            Posts
+        </div>
+      `}
+      const B = { template: '<div>B</div>'}
+      const A2 = { template: '<div>A2</div>'}
+
+      const router = new VueRouter({
+        routes: [
+          {
+            path: '/top',
+            component: Top
+          },
+          {
+            path: '/users/:userId',
+            component: User,
+            children: [
+                {
+                    path: 'posts',
+                    component: Posts
+                }
+            ]
+          },
+          {
+              path: '/a',
+              redirect: {name: 'page-b'}
+          },
+          {
+              name: 'page-b',
+              path: '/b',
+              component: B
+          },
+          {
+              path: '/a2',
+              component: A2,
+              alias: '/b2'
+          },
+        ]
+      })
+
+      const app = new Vue({
+        // router: router
+        router
+      }).$mount('#app')
+    </script>
+
+  </body>
+</html>
